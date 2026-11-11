@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { motion } from "framer-motion";
 import { Icon } from "./Icon";
 
@@ -18,6 +19,7 @@ interface SegmentedProps<T extends string> {
 }
 
 export function Segmented<T extends string>({ value, onChange, options, size = "md", name }: SegmentedProps<T>) {
+  const uid = useId(); // keeps the sliding pill local when the same control is mounted twice
   const h = size === "sm" ? "h-9 text-[13px]" : "h-11 text-sm";
   return (
     <div
@@ -34,13 +36,13 @@ export function Segmented<T extends string>({ value, onChange, options, size = "
             aria-checked={active}
             type="button"
             onClick={() => onChange(o.value)}
-            className={`relative flex-1 ${h} px-4 rounded-full font-medium transition-colors duration-200 ${
+            className={`relative flex-1 ${h} px-3 sm:px-4 whitespace-nowrap rounded-full font-medium transition-colors duration-200 ${
               active ? "text-[var(--on-primary)]" : "text-[var(--ink-2)] hover:text-[var(--ink)]"
             }`}
           >
             {active && (
               <motion.span
-                layoutId={`seg-${name}`}
+                layoutId={`seg-${uid}`}
                 className="absolute inset-0 rounded-full bg-[var(--primary)] elev-primary"
                 transition={{ type: "spring", stiffness: 420, damping: 36 }}
               />

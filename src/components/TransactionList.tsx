@@ -20,7 +20,7 @@ export function TransactionList({ rows, onDelete, limit = 12 }: Props) {
       <div className="grid h-[160px] place-items-center text-center text-sm text-[var(--ink-3)]">
         <div>
           <Icon name="receipt_long" size={32} className="mb-2 opacity-60" />
-          <p>Nothing here yet. Add your first entry on the left.</p>
+          <p>Nothing here yet. Add your first entry from the Add branch.</p>
         </div>
       </div>
     );

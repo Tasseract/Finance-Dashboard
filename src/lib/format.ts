@@ -1,12 +1,15 @@
-const currency = new Intl.NumberFormat("en-US", {
+/** The app works in Philippine pesos only; amounts are stored as plain numbers with no conversion. */
+export const CURRENCY_SYMBOL = "₱";
+
+const currency = new Intl.NumberFormat("en-PH", {
   style: "currency",
-  currency: "USD",
+  currency: "PHP",
   maximumFractionDigits: 2,
 });
 
-const compact = new Intl.NumberFormat("en-US", {
+const compact = new Intl.NumberFormat("en-PH", {
   style: "currency",
-  currency: "USD",
+  currency: "PHP",
   notation: "compact",
   maximumFractionDigits: 1,
 });
@@ -15,7 +18,7 @@ export function money(n: number): string {
   return currency.format(n);
 }
 
-/** Auto-compact: $1,284 / $12.9K / $4.2M */
+/** Auto-compact: ₱1,284.00 / ₱12.9K / ₱4.2M */
 export function moneyCompact(n: number): string {
   return Math.abs(n) >= 10_000 ? compact.format(n) : currency.format(n);
 }

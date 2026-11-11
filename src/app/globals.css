@@ -19,6 +19,10 @@
   --glass-inner: rgba(255, 255, 255, 0.9);
   --glass-shadow: 0 24px 60px -28px rgba(30, 36, 80, 0.35), 0 2px 10px rgba(30, 36, 80, 0.06);
   --chart-surface: #f3f4fa;
+  --sheet: rgba(255, 255, 255, 0.88);
+  --star: rgba(40, 46, 110, 0.5);
+  --tendril-a: #17a892;
+  --tendril-b: #d9489a;
 
   /* ink */
   --ink: #141528;
@@ -67,6 +71,10 @@
     --glass-inner: rgba(255, 255, 255, 0.22);
     --glass-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.25);
     --chart-surface: #1c1b31;
+    --sheet: rgba(22, 22, 48, 0.84);
+    --star: rgba(255, 255, 255, 0.9);
+    --tendril-a: #2dd4bf;
+    --tendril-b: #ff7ac8;
     --ink: #f3f2fb;
     --ink-2: #bdbdd6;
     --ink-3: #8a8aa8;
@@ -101,6 +109,10 @@
   --glass-inner: rgba(255, 255, 255, 0.22);
   --glass-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.25);
   --chart-surface: #1c1b31;
+  --sheet: rgba(22, 22, 48, 0.84);
+  --star: rgba(255, 255, 255, 0.9);
+  --tendril-a: #2dd4bf;
+  --tendril-b: #ff7ac8;
   --ink: #f3f2fb;
   --ink-2: #bdbdd6;
   --ink-3: #8a8aa8;
@@ -195,8 +207,79 @@ body {
   to   { transform: translate3d(6vw, 4vh, 0) scale(1.12); }
 }
 
+.starfield {
+  position: absolute;
+  inset: 0;
+  fill: var(--star);
+}
+
+.starfield .twinkle {
+  animation: twinkle 5s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 1; }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Constellation core                                                 */
+/* ------------------------------------------------------------------ */
+
+.orbit {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  border: 1px dashed color-mix(in oklab, var(--primary) 60%, transparent);
+  animation: orbit-spin 60s linear infinite;
+}
+
+.orbit-a { inset: -9%; }
+
+.orbit-b {
+  inset: -24%;
+  border-style: dotted;
+  border-color: color-mix(in oklab, var(--blob-3) 55%, transparent);
+  animation-duration: 90s;
+  animation-direction: reverse;
+}
+
+/* a small satellite riding the outer orbit */
+.orbit-b::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--blob-3);
+  box-shadow: 0 0 12px var(--blob-3);
+}
+
+.core-pulse {
+  position: absolute;
+  inset: -9%;
+  border-radius: 999px;
+  pointer-events: none;
+  border: 1.5px solid var(--primary);
+  animation: core-pulse 2.8s ease-out infinite;
+}
+
+@keyframes orbit-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes core-pulse {
+  from { transform: scale(0.94); opacity: 0.75; }
+  to   { transform: scale(1.55); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .blob { animation: none; }
+  .blob,
+  .orbit,
+  .starfield .twinkle { animation: none; }
+  .core-pulse { animation: none; opacity: 0.4; }
 }
 
 /* ------------------------------------------------------------------ */

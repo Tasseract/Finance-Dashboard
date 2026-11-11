@@ -11,12 +11,12 @@ import {
   type TooltipContentProps,
 } from "recharts";
 import type { FlowPoint } from "@/lib/analytics";
-import { money } from "@/lib/format";
+import { CURRENCY_SYMBOL, money } from "@/lib/format";
 
 function compact(n: number): string {
-  if (Math.abs(n) >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (Math.abs(n) >= 1_000) return `$${(n / 1_000).toFixed(n % 1000 === 0 ? 0 : 1)}K`;
-  return `$${n}`;
+  if (Math.abs(n) >= 1_000_000) return `${CURRENCY_SYMBOL}${(n / 1_000_000).toFixed(1)}M`;
+  if (Math.abs(n) >= 1_000) return `${CURRENCY_SYMBOL}${(n / 1_000).toFixed(n % 1000 === 0 ? 0 : 1)}K`;
+  return `${CURRENCY_SYMBOL}${n}`;
 }
 
 function FlowTooltip({ active, payload, label }: Partial<TooltipContentProps<number, string>>) {

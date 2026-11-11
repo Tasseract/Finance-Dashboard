@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
  * Floating 3D hero. Shows the Blender render at /hero/coin.png (source scene:
  * design/lumen-3d.blend) and falls back to a CSS-shaded glass orb if it fails to load.
  */
-export function Hero3D({ className = "" }: { className?: string }) {
+export function Hero3D({ className = "", shadow = true }: { className?: string; shadow?: boolean }) {
   const reduce = useReducedMotion();
   const [failed, setFailed] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -49,7 +49,7 @@ export function Hero3D({ className = "" }: { className?: string }) {
         )}
       </motion.div>
       {/* contact shadow */}
-      {!reduce && (
+      {shadow && !reduce && (
         <motion.div
           className="absolute left-1/2 -bottom-2 h-5 w-[55%] -translate-x-1/2 rounded-full blur-xl"
           style={{ background: "rgba(0,0,0,0.35)" }}
@@ -95,7 +95,7 @@ function GlassOrb() {
             textShadow: "0 8px 30px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.6)",
           }}
         >
-          $
+          ₱
         </span>
       </div>
     </div>

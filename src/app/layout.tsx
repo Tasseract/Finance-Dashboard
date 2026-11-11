@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+/* latin-ext carries the peso sign (U+20B1); browsers only fetch it when that glyph is on the page. */
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin", "latin-ext"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 /* Subset of Material Symbols Rounded (only the icons this app uses), variable FILL/opsz axes. */
 const symbols = localFont({

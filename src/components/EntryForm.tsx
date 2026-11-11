@@ -4,7 +4,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { categoriesFor } from "@/lib/categories";
-import { todayISO } from "@/lib/format";
+import { CURRENCY_SYMBOL, todayISO } from "@/lib/format";
 import type { NewTransaction, TransactionType } from "@/lib/types";
 import { Button } from "./ui/Button";
 import { SelectField, TextArea, TextField } from "./ui/Field";
@@ -27,13 +27,15 @@ type Errors = Partial<Record<keyof z.infer<typeof schema>, string>>;
 
 interface EntryFormProps {
   onSubmit: (t: NewTransaction) => Promise<void>;
+  /** Which side the form opens on; remount (change `key`) to apply a new value. */
+  initialType?: TransactionType;
 }
 
-export function EntryForm({ onSubmit }: EntryFormProps) {
-  const [type, setType] = useState<TransactionType>("expense");
+export function EntryForm({ onSubmit, initialType = "expense" }: EntryFormProps) {
+  const [type, setType] = useState<TransactionType>(initialType);
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("food");
+  const [category, setCategory] = useState(initialType === "income" ? "salary" : "food");
   const [date, setDate] = useState(todayISO);
   const [note, setNote] = useState("");
   const [errors, setErrors] = useState<Errors>({});
@@ -106,7 +108,7 @@ export function EntryForm({ onSubmit }: EntryFormProps) {
         <TextField
           id="tx-amount"
           label="Amount"
-          prefix="$"
+          prefix={CURRENCY_SYMBOL}
           type="number"
           inputMode="decimal"
           step="0.01"

@@ -3,9 +3,17 @@
 A glassmorphic, Material-flavoured personal finance dashboard. Built with Next.js 16, React 19,
 Tailwind CSS 4, Recharts, Framer Motion and Supabase. Deploys to Vercel.
 
+The dashboard is laid out as a constellation. It starts as a single floating coin; pressing it
+grows branches (Overview, Cash flow, Spending, Activity, Add entry), each branch fans out into
+leaves, and each leaf opens a floating window you can drag around (a bottom sheet on phones).
+Press the coin again, or Escape, to fold it back up.
+
+Amounts are in Philippine pesos. There is no currency conversion: numbers are stored and shown
+as entered.
+
 There is no ingestion pipeline yet, so entries are typed in by hand: name, amount, type,
 category, date and an optional note. Pressing **Send** pushes the row into the dashboard and
-every tile and chart recomputes.
+every figure and chart recomputes.
 
 ## Run it
 
@@ -15,7 +23,7 @@ npm run dev
 ```
 
 Open http://localhost:3000. Without Supabase keys the app runs in **Local mode** and keeps
-data in the browser's `localStorage`. Use **Load sample data** to see it populated.
+data in the browser's `localStorage`. Open **Activity → Load sample data** to see it populated.
 
 ## Connect Supabase
 
@@ -47,10 +55,14 @@ Add the two `NEXT_PUBLIC_SUPABASE_*` variables in the Vercel project settings
 
 ```
 src/app/            layout, page, global theme tokens (light + dark)
-src/components/     Dashboard, EntryForm, charts, tiles, 3D hero, UI primitives
+src/components/     Dashboard (data + tree), EntryForm, charts, 3D hero, UI primitives
+src/components/constellation/
+                    stage, node geometry (layout.ts), floating windows, window panels
 src/lib/            types, store adapters (Supabase / local), analytics, formatting
 supabase/schema.sql database schema + RLS policies
-public/hero/        drop a Blender render named coin.png here to replace the CSS orb
+public/hero/, public/kpi/
+                    Blender renders: the coin and the four KPI objects
+design/             lumen-3d.blend, the source scene for those renders
 ```
 
 ## Design notes
