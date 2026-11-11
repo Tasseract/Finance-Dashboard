@@ -61,6 +61,18 @@ const localStore: TransactionStore = {
 
 /* ---------- Supabase adapter ---------- */
 
+function friendly(error: { code?: string; message: string }): Error {
+  if (error.code === "PGRST205") {
+    return new Error(
+      "Supabase is connected, but the transactions table does not exist yet. Run supabase/schema.sql in the SQL editor.",
+    );
+  }
+  if (error.code === "42501") {
+    return new Error("Supabase refused the request (row-level security). Re-run the policies in supabase/schema.sql.");
+  }
+  return new Error(error.message);
+}
+
 const supabaseStore: TransactionStore = {
   source: "supabase",
   async list() {
@@ -70,24 +82,24 @@ const supabaseStore: TransactionStore = {
       .select("*")
       .order("date", { ascending: false })
       .order("created_at", { ascending: false });
-    if (error) throw error;
+    if (error) throw friendly(error);
     return (data ?? []).map((r) => ({ ...r, amount: Number(r.amount) })) as Transaction[];
   },
   async add(input) {
     const sb = getSupabase()!;
     const { data, error } = await sb.from("transactions").insert(input).select("*").single();
-    if (error) throw error;
+    if (error) throw friendly(error);
     return { ...data, amount: Number(data.amount) } as Transaction;
   },
   async remove(id) {
     const sb = getSupabase()!;
     const { error } = await sb.from("transactions").delete().eq("id", id);
-    if (error) throw error;
+    if (error) throw friendly(error);
   },
   async clear() {
     const sb = getSupabase()!;
     const { error } = await sb.from("transactions").delete().neq("id", "");
-    if (error) throw error;
+    if (error) throw friendly(error);
   },
 };
 
