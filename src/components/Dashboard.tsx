@@ -16,6 +16,8 @@ import { money, moneyCompact, pct, shortDate, signed } from "@/lib/format";
 import { SAMPLE_TRANSACTIONS } from "@/lib/sample";
 import type { TransactionType } from "@/lib/types";
 import { useTransactions } from "@/lib/useTransactions";
+import { useAccount } from "./auth/AuthGate";
+import { DevicesPanel } from "./auth/DevicesPanel";
 import { Background } from "./Background";
 import { CashflowChart } from "./CashflowChart";
 import { CategoryChart } from "./CategoryChart";
@@ -44,6 +46,7 @@ interface OpenWindow {
 
 export function Dashboard() {
   const { rows, loading, error, source, add, addMany, remove, clear } = useTransactions();
+  const account = useAccount(); // null in Local mode, where there is no sign-in
   const [range, setRange] = useState<RangeKey>("month");
   const [seeding, setSeeding] = useState(false);
 
@@ -266,6 +269,33 @@ export function Dashboard() {
         },
       ],
     },
+    ...(account
+      ? [
+          {
+            id: "account",
+            label: "Account",
+            caption: account.email ?? "Signed in",
+            icon: "check_circle",
+            leaves: [
+              {
+                id: "devices",
+                label: "Trusted devices",
+                caption: "Where the code is skipped",
+                icon: "laptop_mac",
+                selected: isOpen("devices"),
+                onSelect: () => openWindow("devices"),
+              },
+              {
+                id: "signout",
+                label: "Sign out",
+                caption: "This device stays trusted",
+                icon: "arrow_outward",
+                onSelect: () => void account.signOut(),
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 
   /* ---------- floating windows ---------- */
@@ -424,6 +454,14 @@ export function Dashboard() {
           ),
         };
       }
+      case "devices":
+        if (!account) return null;
+        return {
+          title: "Trusted devices",
+          subtitle: account.email ?? undefined,
+          icon: "laptop_mac",
+          content: <DevicesPanel onChanged={account.refresh} />,
+        };
       case "add": {
         const type: TransactionType = param === "income" ? "income" : "expense";
         return {

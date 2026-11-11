@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { AuthGate } from "@/components/auth/AuthGate";
 import { Background } from "@/components/Background";
 import { Dashboard } from "@/components/Dashboard";
 
@@ -7,7 +8,9 @@ import { Dashboard } from "@/components/Dashboard";
 export default function Home() {
   return (
     <Suspense fallback={<Background />}>
-      <Dashboard />
+      <AuthGate>
+        <Dashboard />
+      </AuthGate>
     </Suspense>
   );
 }

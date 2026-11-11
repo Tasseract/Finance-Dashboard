@@ -404,6 +404,25 @@ body {
   color: var(--primary);
 }
 
+/* Browser-filled values (Safari Keychain, password managers): float the label and keep the
+   field in theme colours rather than the browser's autofill tint. */
+.md-field > input:-webkit-autofill ~ label,
+.md-field > input:autofill ~ label {
+  transform: translateY(-10px) scale(0.76);
+}
+
+.md-field > input:-webkit-autofill,
+.md-field > input:autofill {
+  -webkit-text-fill-color: var(--ink);
+  caret-color: var(--ink);
+  box-shadow: 0 0 0 100px var(--field-focus) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
+.md-field > input:disabled {
+  opacity: 0.6;
+}
+
 .md-field .md-prefix {
   position: absolute;
   left: 16px;
