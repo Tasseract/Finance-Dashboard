@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { Icon } from "./ui/Icon";
 
 interface StatTileProps {
   label: string;
   value: string;
   icon: string;
+  /** Optional 3D render (transparent PNG) shown in place of the icon chip. */
+  art?: string;
   accent?: "income" | "expense" | "net" | "primary";
   hint?: string;
   delta?: { text: string; good: boolean } | null;
@@ -40,18 +43,31 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
   );
 }
 
-export function StatTile({ label, value, icon, accent = "primary", hint, delta, spark }: StatTileProps) {
+export function StatTile({ label, value, icon, art, accent = "primary", hint, delta, spark }: StatTileProps) {
   const color = accentVar[accent];
+  const [artFailed, setArtFailed] = useState(false);
   return (
     <div className="glass p-5 flex flex-col gap-3 min-h-[132px]">
       <div className="flex items-center justify-between">
         <span className="text-[13px] text-[var(--ink-2)]">{label}</span>
-        <span
-          className="grid h-9 w-9 place-items-center rounded-full"
-          style={{ background: `color-mix(in oklab, ${color} 18%, transparent)`, color }}
-        >
-          <Icon name={icon} size={20} filled />
-        </span>
+        {art && !artFailed ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={art}
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+            onError={() => setArtFailed(true)}
+            className="-my-4 -mr-2 h-[68px] w-[68px] scale-[1.3] object-contain drop-shadow-[0_10px_14px_rgba(0,0,0,0.22)]"
+          />
+        ) : (
+          <span
+            className="grid h-9 w-9 place-items-center rounded-full"
+            style={{ background: `color-mix(in oklab, ${color} 18%, transparent)`, color }}
+          >
+            <Icon name={icon} size={20} filled />
+          </span>
+        )}
       </div>
       <div className="flex items-end justify-between gap-3">
         <div>

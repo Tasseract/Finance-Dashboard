@@ -1,21 +1,21 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
- * Floating 3D hero. Uses a Blender-rendered PNG at /hero/coin.png when present,
- * otherwise falls back to a CSS-shaded glass orb so the layout never looks empty.
+ * Floating 3D hero. Shows the Blender render at /hero/coin.png (source scene:
+ * design/lumen-3d.blend) and falls back to a CSS-shaded glass orb if it fails to load.
  */
 export function Hero3D({ className = "" }: { className?: string }) {
   const reduce = useReducedMotion();
-  const [hasRender, setHasRender] = useState<boolean | null>(null);
+  const [failed, setFailed] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
 
+  // onError can fire before hydration attaches the handler, so re-check once mounted.
   useEffect(() => {
-    const img = new Image();
-    img.onload = () => setHasRender(true);
-    img.onerror = () => setHasRender(false);
-    img.src = "/hero/coin.png";
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) setFailed(true);
   }, []);
 
   const float = reduce
@@ -34,11 +34,18 @@ export function Hero3D({ className = "" }: { className?: string }) {
         animate={float}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
       >
-        {hasRender ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src="/hero/coin.png" alt="" className="h-full w-full object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.35)]" />
-        ) : (
+        {failed ? (
           <GlassOrb />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            ref={imgRef}
+            src="/hero/coin.png"
+            alt=""
+            draggable={false}
+            onError={() => setFailed(true)}
+            className="h-full w-full scale-[1.18] object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.35)]"
+          />
         )}
       </motion.div>
       {/* contact shadow */}

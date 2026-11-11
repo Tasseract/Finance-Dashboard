@@ -135,13 +135,14 @@ export function Dashboard() {
 
           {/* ---------- KPIs ---------- */}
           <motion.div variants={item} className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <StatTile label="Net" value={money(summary.net)} icon="account_balance" accent="net" hint={rangeLabel} spark={spark} />
-            <StatTile label="Income" value={money(summary.income)} icon="trending_up" accent="income" hint={rangeLabel} />
-            <StatTile label="Expenses" value={money(summary.expenses)} icon="shopping_bag" accent="expense" hint={rangeLabel} />
+            <StatTile label="Net" value={money(summary.net)} icon="account_balance" art="/kpi/net.png" accent="net" hint={rangeLabel} spark={spark} />
+            <StatTile label="Income" value={money(summary.income)} icon="trending_up" art="/kpi/income.png" accent="income" hint={rangeLabel} />
+            <StatTile label="Expenses" value={money(summary.expenses)} icon="shopping_bag" art="/kpi/expenses.png" accent="expense" hint={rangeLabel} />
             <StatTile
               label="Savings rate"
               value={summary.income > 0 ? pct(summary.savingsRate) : "—"}
               icon="savings"
+              art="/kpi/savings.png"
               accent="primary"
               hint={summary.income > 0 ? "of income kept" : "no income logged"}
             />
